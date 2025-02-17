@@ -7,6 +7,8 @@ public class Projectile : MonoBehaviour
     public Rigidbody Kogel;
     public float power = 1500f;
     public float moveSpeed = 2f;
+    Rigidbody instance;
+
     void Start()
     {
         
@@ -18,12 +20,21 @@ public class Projectile : MonoBehaviour
         if (Input.GetButtonDown("Fire1"))
         {
             //instantiate projectile - (overloads) what ?, where ?, a rotation ?
-            Rigidbody instance = Instantiate(Kogel, transform.position, transform.rotation) as Rigidbody;
+             instance = Instantiate(Kogel, transform.position, transform.rotation) as Rigidbody;
             //vector to represent forward direction of the current transform
             Vector3 fwd = transform.TransformDirection(Vector3.forward);
             instance.AddForce(fwd * power);
         }
-
+       // Destroy(instance, 1f);
     }
-}
+          public class Lifetime : MonoBehaviour
+     {
+        private void Start()
+        {
+            
+        }
+     }
+    }
+
+
 
