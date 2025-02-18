@@ -12,9 +12,14 @@ public class Astroid : MonoBehaviour
             
     }
 
-    private void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision collision)
     {
-        Destroy(collision.gameObject);
+        if (collision.gameObject.tag == "bullet")
+        {
+            Destroy(collision.gameObject);      //to destroy enemy
+            Destroy(gameObject);                    //to destroy bullet
+
+        }
     }
 
 }
