@@ -1,22 +1,27 @@
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor;
 using UnityEngine;
-using static UnityEngine.UIElements.UxmlAttributeDescription;
+using System.Collections.Generic;
 
 public class Astroidspawn : MonoBehaviour
 {
-    
-       
-        public GameObject prefab;
+    [SerializeField] private List<GameObject> asteroids;
 
-        private void Start()
+    public GameObject prefab;
+
+    private void Start()
+    {
+        asteroids = new List<GameObject>();
+
+        for (int i = 0; i < 7; i++)
         {
-            for (int i = 0; i < 10; i++)
-            {
-                Vector3 randomPos = new Vector3(Random.Range(-5f, 5f), 0, Random.Range(-5, 5f));
-                Instantiate(prefab, randomPos, Quaternion.identity);
-            }
+            Vector3 randomPos = new Vector3(Random.Range(-15f, 15f), 0, Random.Range(-15, 15f));
+            GameObject go = Instantiate(prefab, randomPos, Quaternion.identity);
+            asteroids.Add(go);
         }
-      
+    }
+
+    public void removeastroid(GameObject astroid)
+    {
+        asteroids.Remove(astroid);
+    }
+
 }

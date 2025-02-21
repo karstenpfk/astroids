@@ -10,6 +10,9 @@ public class Spaceship : MonoBehaviour
     [SerializeField] private float movementSpeed = 6.0f;
     [SerializeField] private float rotationSpeed = 10.0f;
 
+    [SerializeField] private GameObject Kogel;
+    [SerializeField] GameObject spawnPoint;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -17,11 +20,11 @@ public class Spaceship : MonoBehaviour
         rb.angularVelocity = Vector3.zero;
 
     }
-        
-    
+
+
     void FixedUpdate()
     {
-       // float forward = Mathf.Clamp(Input.GetAxisRaw("Vertical"), 1, 0);
+        // float forward = Mathf.Clamp(Input.GetAxisRaw("Vertical"), 1, 0);
         if (Input.GetKey(KeyCode.W))
         {
             rb.AddRelativeForce(0, 0, Input.GetAxisRaw("Vertical") * movementSpeed, ForceMode.Acceleration);
@@ -29,10 +32,18 @@ public class Spaceship : MonoBehaviour
         rb.rotation *= Quaternion.AngleAxis(Input.GetAxisRaw("Horizontal") * rotationSpeed, Vector3.up);
 
         // Update is called once per frame
-        
 
-        
+        if (Input.GetButtonDown("Fire1"))
+        {
+            //instantiate projectile - (overloads) what ?, where ?, a rotation ?
+            Instantiate<GameObject>(Kogel, spawnPoint.transform.position, spawnPoint.transform.rotation);
+        }
 
+
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        Destroy(gameObject);
     }
 }
 

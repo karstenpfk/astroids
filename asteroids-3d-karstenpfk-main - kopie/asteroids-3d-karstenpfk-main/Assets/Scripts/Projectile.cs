@@ -2,39 +2,27 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     //decalare and init shooter vars
-    public Rigidbody Kogel;
-    public float power = 1500f;
-    public float moveSpeed = 2f;
-    Rigidbody instance;
+    //public GameObject Kogel;
+    //public float power = 1500f;
+    public float moveSpeed = 20f;
+    Rigidbody rb;
 
     void Start()
     {
-        
-    }
+        rb = gameObject.GetComponent<Rigidbody>();
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetButtonDown("Fire1"))
-        {
-            //instantiate projectile - (overloads) what ?, where ?, a rotation ?
-             instance = Instantiate(Kogel, transform.position, transform.rotation) as Rigidbody;
-            //vector to represent forward direction of the current transform
-            Vector3 fwd = transform.TransformDirection(Vector3.forward);
-            instance.AddForce(fwd * power);
-        }
-       // Destroy(instance, 1f);
+        Destroy(gameObject, 3f);
+
+        //vector to represent forward direction of the current transform
+        //Vector3 fwd = transform.TransformDirection(Vector3.forward);
+
+
+        rb.linearVelocity = transform.right * moveSpeed;
+
     }
-          public class Lifetime : MonoBehaviour
-     {
-        private void Start()
-        {
-            
-        }
-     }
-    }
+}
 
 
 
