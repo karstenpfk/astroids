@@ -13,7 +13,7 @@ public class Projectile : MonoBehaviour
     {
         rb = gameObject.GetComponent<Rigidbody>();
 
-        Destroy(gameObject, 3f);
+        Destroy(gameObject, 1f);
 
         //vector to represent forward direction of the current transform
         //Vector3 fwd = transform.TransformDirection(Vector3.forward);

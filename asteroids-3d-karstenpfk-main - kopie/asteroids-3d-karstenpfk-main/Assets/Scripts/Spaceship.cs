@@ -1,9 +1,10 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
-public class Spaceship : MonoBehaviour
+    public class Spaceship : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     private Rigidbody rb;
     public float thrust;
     private Vector3 Torque;
@@ -13,37 +14,89 @@ public class Spaceship : MonoBehaviour
     [SerializeField] private GameObject Kogel;
     [SerializeField] GameObject spawnPoint;
 
+    public int lives = 3; // Aantal hartjes
+    public float invincibilityDuration = 2f; // Duur van de onkwetsbaarheid
+    private bool isInvincible = false; // Of het ruimteschip momenteel onkwetsbaar is
+    [SerializeField] private GameObject forceField; // Referentie naar het krachtveld GameObject
+
+
+    [SerializeField] private HeartDisplay heartDisplay; // Referentie naar de HeartDisplay
+     public int pointCounter; 
+     private HeartDisplay heart;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+        forceField.SetActive(false); // Zorg ervoor dat het krachtveld uit staat bij de start
 
+        heartDisplay.UpdateHearts(lives); // Update de hartjes bij de start
     }
 
+    private void Update()
+    {
+        if (Input.GetButtonDown("Fire1"))
+        {
+            // Instantiate projectile - (overloads) what ?, where ?, a rotation ?
+            Instantiate(Kogel, spawnPoint.transform.position, spawnPoint.transform.rotation);
+        }
+        if (pointCounter >= 10000)
+        {
+            if (lives < 4){
+
+            lives++;
+            }
+            heartDisplay.UpdateHearts(lives);
+            pointCounter = 0;
+        }
+    }
 
     void FixedUpdate()
     {
-        // float forward = Mathf.Clamp(Input.GetAxisRaw("Vertical"), 1, 0);
         if (Input.GetKey(KeyCode.W))
         {
             rb.AddRelativeForce(0, 0, Input.GetAxisRaw("Vertical") * movementSpeed, ForceMode.Acceleration);
         }
         rb.rotation *= Quaternion.AngleAxis(Input.GetAxisRaw("Horizontal") * rotationSpeed, Vector3.up);
-
-        // Update is called once per frame
-
-        if (Input.GetButtonDown("Fire1"))
-        {
-            //instantiate projectile - (overloads) what ?, where ?, a rotation ?
-            Instantiate<GameObject>(Kogel, spawnPoint.transform.position, spawnPoint.transform.rotation);
-        }
-
-
     }
+
     private void OnCollisionEnter(Collision collision)
     {
-        Destroy(gameObject);
+        //print("hit");
+        if (collision.gameObject.CompareTag("Astroid") && !isInvincible)
+        {
+            StartCoroutine(TakeDamage());
+        }
+    }
+
+    private IEnumerator TakeDamage()
+    {
+        lives--; // Verminder het aantal hartjes
+
+        heartDisplay.UpdateHearts(lives); // Update de hartjes in de UI
+
+        // Controleer of het ruimteschip geen hartjes meer heeft
+        if (lives < 0)
+        {
+            Destroy(gameObject); // Vernietig het ruimteschip
+            SceneManager.LoadScene("eindscherm");
+        }
+
+        isInvincible = true; // Maak het ruimteschip tijdelijk onkwetsbaar
+        forceField.SetActive(true); // Activeer het krachtveld
+
+        // Wacht voor de duur van de onkwetsbaarheid
+        yield return new WaitForSeconds(invincibilityDuration);
+
+        isInvincible = false; // Maak het ruimteschip weer kwetsbaar
+        forceField.SetActive(false); // Deactiveer het krachtveld
+
+    }
+
+    public void ActivatePickup()
+    {
+        Debug.Log("Pickup collected");
     }
 }
 
